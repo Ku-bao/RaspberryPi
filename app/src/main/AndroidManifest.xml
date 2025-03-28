@@ -18,7 +18,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.RaspberryPi">
+            android:theme="@style/Theme.RaspberryPi.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
@@ -28,7 +27,7 @@ fun ControlScreen(navController: NavController) {
                 title = { Text("遥控模式") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "返回")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -46,21 +45,21 @@ fun ControlScreen(navController: NavController) {
             // 第一部分：摇杆区域
             Box(
                 modifier = Modifier
-                    .weight(1f)
+                    .width(200.dp)
                     .fillMaxHeight()
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .size(200.dp)
+                        .size(140.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(70.dp)
+                            .size(50.dp)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.primary)
                     )
@@ -70,14 +69,14 @@ fun ControlScreen(navController: NavController) {
             // 第二部分：视频流区域
             Box(
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(1.5f)
                     .fillMaxHeight()
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .aspectRatio(1f)
+                        .fillMaxSize()
                         .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                 ) {
@@ -86,72 +85,79 @@ fun ControlScreen(navController: NavController) {
             }
             
             // 第三部分：按钮区域
-            Column(
+            Box(
                 modifier = Modifier
-                    .weight(1f)
+                    .width(200.dp)
                     .fillMaxHeight()
                     .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                contentAlignment = Alignment.Center
             ) {
-                // 三个功能按钮
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Button(
-                        onClick = { /* TODO: 实现按钮1功能 */ },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
+                    // 三个功能按钮
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text("按钮1")
+                        Button(
+                            onClick = { /* TODO: 实现按钮1功能 */ },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text("按钮1")
+                        }
+                        Button(
+                            onClick = { /* TODO: 实现按钮2功能 */ },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text("按钮2")
+                        }
+                        Button(
+                            onClick = { /* TODO: 实现按钮3功能 */ },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text("按钮3")
+                        }
                     }
+                    
+                    // 开始抓取按钮
                     Button(
-                        onClick = { /* TODO: 实现按钮2功能 */ },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
+                        onClick = {},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
                     ) {
-                        Text("按钮2")
+                        Text("开始抓取")
                     }
+                    
+                    // 切换按钮
                     Button(
-                        onClick = { /* TODO: 实现按钮3功能 */ },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
+                        onClick = { isStreaming = !isStreaming },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isStreaming) 
+                                MaterialTheme.colorScheme.error 
+                            else 
+                                MaterialTheme.colorScheme.primary
+                        )
                     ) {
-                        Text("按钮3")
+                        Icon(
+                            if (isStreaming) Icons.Default.Stop else Icons.Default.PlayArrow,
+                            contentDescription = if (isStreaming) "停止" else "开始",
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text(if (isStreaming) "停止预览" else "开始预览")
                     }
-                }
-                Button(
-                    onClick = {},
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary)
-                ) {
-                    Text("开始抓取")
-                }
-                // 切换按钮
-                Button(
-                    onClick = { isStreaming = !isStreaming },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isStreaming) 
-                            MaterialTheme.colorScheme.error 
-                        else 
-                            MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Icon(
-                        if (isStreaming) Icons.Default.Stop else Icons.Default.PlayArrow,
-                        contentDescription = if (isStreaming) "停止" else "开始",
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                    Text(if (isStreaming) "停止识别" else "开始识别")
                 }
             }
         }
