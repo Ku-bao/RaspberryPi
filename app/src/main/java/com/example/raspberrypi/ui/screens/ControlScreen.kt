@@ -14,12 +14,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.raspberrypi.ui.components.Joystick
+import com.example.raspberrypi.ui.viewmodel.ControlViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ControlScreen(navController: NavController) {
-    var isStreaming by remember { mutableStateOf(false) }
+fun ControlScreen(
+    navController: NavController,
+    viewModel: ControlViewModel = viewModel()
+) {
+    val isStreaming by viewModel.isStreaming.collectAsState()
+    val isConnected by viewModel.isConnected.collectAsState()
     
     Scaffold(
         topBar = {
@@ -50,20 +57,11 @@ fun ControlScreen(navController: NavController) {
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(140.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary)
-                    )
-                }
+                Joystick(
+                    onDirectionChange = { x, y ->
+                        viewModel.sendControlData(x, y)
+                    }
+                )
             }
             
             // 第二部分：视频流区域
@@ -139,7 +137,7 @@ fun ControlScreen(navController: NavController) {
                     
                     // 切换按钮
                     Button(
-                        onClick = { isStreaming = !isStreaming },
+                        onClick = { viewModel.toggleStreaming() },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
