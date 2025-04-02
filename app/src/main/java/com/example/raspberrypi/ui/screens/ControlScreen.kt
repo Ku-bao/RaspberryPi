@@ -2,7 +2,6 @@ package com.example.raspberrypi.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -27,7 +26,7 @@ fun ControlScreen(
 ) {
     val isStreaming by viewModel.isStreaming.collectAsState()
     val isConnected by viewModel.isConnected.collectAsState()
-    
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -52,8 +51,8 @@ fun ControlScreen(
             // 第一部分：摇杆区域
             Box(
                 modifier = Modifier
-                    .width(200.dp)
-                    .fillMaxHeight()
+                    .fillMaxHeight() // 去掉固定宽度
+                    .weight(1f) // 使用权重以平衡布局
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -63,7 +62,7 @@ fun ControlScreen(
                     }
                 )
             }
-            
+
             // 第二部分：视频流区域
             Box(
                 modifier = Modifier
@@ -81,7 +80,7 @@ fun ControlScreen(
                     // TODO: 添加摄像头预览
                 }
             }
-            
+
             // 第三部分：按钮区域
             Box(
                 modifier = Modifier
@@ -120,7 +119,7 @@ fun ControlScreen(
                             Text("按钮3")
                         }
                     }
-                    
+
                     // 开始抓取按钮
                     Button(
                         onClick = {},
@@ -134,7 +133,7 @@ fun ControlScreen(
                     ) {
                         Text("开始抓取")
                     }
-                    
+
                     // 切换按钮
                     Button(
                         onClick = { viewModel.toggleStreaming() },
@@ -143,9 +142,9 @@ fun ControlScreen(
                             .height(56.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isStreaming) 
-                                MaterialTheme.colorScheme.error 
-                            else 
+                            containerColor = if (isStreaming)
+                                MaterialTheme.colorScheme.error
+                            else
                                 MaterialTheme.colorScheme.primary
                         )
                     ) {
@@ -160,4 +159,4 @@ fun ControlScreen(
             }
         }
     }
-} 
+}

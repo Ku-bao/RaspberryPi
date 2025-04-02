@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.raspberrypi.ui.screens.ControlScreen
 import com.example.raspberrypi.ui.screens.MainScreen
+import com.example.raspberrypi.ui.screens.TestScreen
 
 @Composable
 fun AppNavigation() {
@@ -18,5 +19,9 @@ fun AppNavigation() {
         composable("control") {
             ControlScreen(navController)
         }
+        composable("test") {
+            TestScreen(navController)
+        }
+
     }
 } 

@@ -76,7 +76,7 @@ fun MainScreen(navController: NavController) {
                 Card(
                     modifier = Modifier.size(200.dp),
                     shape = RoundedCornerShape(16.dp),
-                    onClick = { /* TODO: 实现第二个卡片功能 */ },
+                    onClick = { navController.navigate("test") },
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer
                     )
