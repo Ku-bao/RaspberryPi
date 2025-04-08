@@ -15,22 +15,28 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.raspberrypi.ui.components.Joystick
-import com.example.raspberrypi.ui.viewmodel.ControlViewModel
-
+import com.example.raspberrypi.ui.viewmodel.AutoGraspViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ControlScreen(
+fun AutoGraspScreen(
     navController: NavController,
-    viewModel: ControlViewModel = viewModel()
+    viewModel: AutoGraspViewModel = viewModel()
 ) {
     val isStreaming by viewModel.isStreaming.collectAsState()
     val isConnected by viewModel.isConnected.collectAsState()
 
+    // 模拟的动态数据
+    val xCoordinate = remember { mutableStateOf("0.0") }
+    val yCoordinate = remember { mutableStateOf("0.0") }
+    val zCoordinate = remember { mutableStateOf("0.0") }
+
+    val distance = remember { mutableStateOf("10.0") }
+    val angle = remember { mutableStateOf("45°") }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("遥控模式") },
+                title = { Text("自动抓取模式") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "返回")
@@ -48,27 +54,13 @@ fun ControlScreen(
                 .padding(paddingValues),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // 第一部分：摇杆区域
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight() // 去掉固定宽度
-                    .weight(1f) // 使用权重以平衡布局
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Joystick(
-                    onDirectionChange = { x, y ->
-                        viewModel.sendControlData(x, y)
-                    }
-                )
-            }
-
-            // 第二部分：视频流区域
+            // 第一部分：视频流
             Box(
                 modifier = Modifier
                     .weight(1.5f)
                     .fillMaxHeight()
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .padding(start = 60.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
@@ -77,14 +69,14 @@ fun ControlScreen(
                         .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                 ) {
-                    // TODO: 添加摄像头预览
+
                 }
             }
 
-            // 第三部分：按钮区域
+            // 第二部分：数据展示和按钮区域
             Box(
                 modifier = Modifier
-                    .width(200.dp)
+                    .weight(1f)
                     .fillMaxHeight()
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
@@ -93,46 +85,29 @@ fun ControlScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // 三个功能按钮
+                    // 显示3D坐标
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Button(
-                            onClick = { /* TODO: 实现按钮1功能 */ },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text("按钮1")
-                        }
-                        Button(
-                            onClick = { /* TODO: 实现按钮2功能 */ },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text("按钮2")
-                        }
-                        Button(
-                            onClick = { /* TODO: 实现按钮3功能 */ },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text("按钮3")
-                        }
+                        Text("3D坐标: (${xCoordinate.value}, ${yCoordinate.value}, ${zCoordinate.value})")
                     }
 
-                    // 开始抓取按钮
-                    Button(
-                        onClick = {},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
+                    // 显示需要移动的距离
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text("开始抓取")
+                        Text("移动距离: ${distance.value} cm")
                     }
+
+                    // 显示偏移角度
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("偏移角度: ${angle.value}")
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
 
                     // 切换按钮
                     Button(
@@ -153,7 +128,7 @@ fun ControlScreen(
                             contentDescription = if (isStreaming) "停止" else "开始",
                             modifier = Modifier.padding(end = 8.dp)
                         )
-                        Text(if (isStreaming) "停止识别" else "开始识别")
+                        Text(if (isStreaming) "停止自动抓取" else "开始自动抓取")
                     }
                 }
             }

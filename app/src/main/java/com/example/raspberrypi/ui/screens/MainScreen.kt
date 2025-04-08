@@ -3,6 +3,7 @@ package com.example.raspberrypi.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.outlined.DirectionsCar
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Search
@@ -76,7 +77,7 @@ fun MainScreen(navController: NavController) {
                 Card(
                     modifier = Modifier.size(200.dp),
                     shape = RoundedCornerShape(16.dp),
-                    onClick = { navController.navigate("test") },
+                    onClick = { navController.navigate("autoGrasp") },
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer
                     )
@@ -89,14 +90,14 @@ fun MainScreen(navController: NavController) {
                         verticalArrangement = Arrangement.Center
                     ) {
                         Icon(
-                            Icons.Default.Settings,
-                            contentDescription = "其他功能",
+                            Icons.Default.AutoAwesome,
+                            contentDescription = "自动抓取",
                             modifier = Modifier.size(48.dp),
                             tint = MaterialTheme.colorScheme.secondary
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            "其他功能",
+                            "自动抓取模式",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
