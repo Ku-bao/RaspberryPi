@@ -1,7 +1,9 @@
 package com.example.raspberrypi.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -12,7 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.raspberrypi.ui.components.Joystick
@@ -26,6 +31,8 @@ fun ControlScreen(
 ) {
     val isStreaming by viewModel.isStreaming.collectAsState()
     val isConnected by viewModel.isConnected.collectAsState()
+
+    val angle = remember { mutableStateOf("45°") }
 
     Scaffold(
         topBar = {
@@ -45,15 +52,15 @@ fun ControlScreen(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             // 第一部分：摇杆区域
             Box(
                 modifier = Modifier
                     .fillMaxHeight() // 去掉固定宽度
-                    .weight(1f) // 使用权重以平衡布局
-                    .padding(16.dp),
+                    .weight(0.5f), // 使用权重以平衡布局
                 contentAlignment = Alignment.Center
             ) {
                 Joystick(
@@ -66,9 +73,13 @@ fun ControlScreen(
             // 第二部分：视频流区域
             Box(
                 modifier = Modifier
-                    .weight(1.5f)
+                    .weight(1.2f)
                     .fillMaxHeight()
-                    .padding(16.dp),
+                    .border(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(16.dp)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
@@ -80,19 +91,44 @@ fun ControlScreen(
                     // TODO: 添加摄像头预览
                 }
             }
-
             // 第三部分：按钮区域
             Box(
                 modifier = Modifier
-                    .width(200.dp)
-                    .fillMaxHeight()
-                    .padding(16.dp),
+                    .weight(1.2f)
+                    .fillMaxHeight(),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    Card (
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ){
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+//                            horizontalArrangement = Arrangement.Center // 水平居中
+                        ) {
+                            Text(
+                                text = "偏移角度:",
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier
+                                    .padding(start = 20.dp, end = 2.dp)
+                            )
+                            Text(
+                                angle.value,
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
                     // 三个功能按钮
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
