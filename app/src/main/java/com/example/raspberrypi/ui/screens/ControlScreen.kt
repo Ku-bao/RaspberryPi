@@ -31,8 +31,7 @@ fun ControlScreen(
 ) {
     val isStreaming by viewModel.isStreaming.collectAsState()
     val isConnected by viewModel.isConnected.collectAsState()
-
-    val angle = remember { mutableStateOf("45°") }
+    val angle by viewModel.angle.collectAsState()
 
     Scaffold(
         topBar = {
@@ -115,7 +114,6 @@ fun ControlScreen(
                                 .fillMaxWidth()
                                 .padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically,
-//                            horizontalArrangement = Arrangement.Center // 水平居中
                         ) {
                             Text(
                                 text = "偏移角度:",
@@ -124,7 +122,7 @@ fun ControlScreen(
                                     .padding(start = 20.dp, end = 2.dp)
                             )
                             Text(
-                                angle.value,
+                                angle,
                                 fontSize = 16.sp
                             )
                         }
@@ -134,21 +132,21 @@ fun ControlScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Button(
-                            onClick = { /* TODO: 实现按钮1功能 */ },
+                            onClick = { viewModel.setModel1() },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
                         ) {
                             Text("按钮1")
                         }
                         Button(
-                            onClick = { /* TODO: 实现按钮2功能 */ },
+                            onClick = { viewModel.setModel2() },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
                         ) {
                             Text("按钮2")
                         }
                         Button(
-                            onClick = { /* TODO: 实现按钮3功能 */ },
+                            onClick = { viewModel.setModel3() },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
                         ) {
@@ -158,7 +156,7 @@ fun ControlScreen(
 
                     // 开始抓取按钮
                     Button(
-                        onClick = {},
+                        onClick = {viewModel.Grasp()},
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
@@ -170,7 +168,7 @@ fun ControlScreen(
                         Text("开始抓取")
                     }
 
-                    // 切换按钮
+                    // 开启检测按钮
                     Button(
                         onClick = { viewModel.toggleStreaming() },
                         modifier = Modifier

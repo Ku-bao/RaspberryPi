@@ -32,14 +32,11 @@ fun AutoGraspScreen(
     val isStreaming by viewModel.isStreaming.collectAsState()
     val isConnected by viewModel.isConnected.collectAsState()
 
-    // 模拟的动态数据
-    val xCoordinate = remember { mutableStateOf("0.0") }
-    val yCoordinate = remember { mutableStateOf("0.0") }
-    val zCoordinate = remember { mutableStateOf("0.0") }
-
-    val distance = remember { mutableStateOf("10.0") }
-    val angle = remember { mutableStateOf("45°") }
-
+    val xCoordinate by viewModel.xCoordinate.collectAsState()
+    val yCoordinate by viewModel.yCoordinate.collectAsState()
+    val zCoordinate by viewModel.zCoordinate.collectAsState()
+    val distance by viewModel.distance.collectAsState()
+    val angle by viewModel.angle.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -127,7 +124,7 @@ fun AutoGraspScreen(
                                 modifier = Modifier.width(90.dp)
                             )
                             Text(
-                                "(${xCoordinate.value}, ${yCoordinate.value}, ${zCoordinate.value})",
+                                "(${xCoordinate}, ${yCoordinate}, ${zCoordinate})",
                                 fontSize = 16.sp
                             )
                         }
@@ -143,7 +140,7 @@ fun AutoGraspScreen(
                                 modifier = Modifier.width(90.dp)
                             )
                             Text(
-                                "${distance.value} cm",
+                                "${distance} cm",
                                 fontSize = 16.sp
                             )
                         }
@@ -159,7 +156,7 @@ fun AutoGraspScreen(
                                 modifier = Modifier.width(90.dp)
                             )
                             Text(
-                                angle.value,
+                                angle,
                                 fontSize = 16.sp
                             )
                         }
