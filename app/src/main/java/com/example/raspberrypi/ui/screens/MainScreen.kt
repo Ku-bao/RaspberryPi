@@ -13,10 +13,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.raspberrypi.data.api.NetworkClient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavController) {
+
+    var showIpDialog by remember { mutableStateOf(false) }
+
+    var ipAddress by remember {  mutableStateOf(NetworkClient.getIpAddress()) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -28,10 +34,10 @@ fun MainScreen(navController: NavController) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* TODO: 实现搜索功能 */ },
+                onClick = { showIpDialog = true },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
-                Icon(Icons.Default.Search, contentDescription = "搜索树莓派")
+                Icon(Icons.Default.Settings, contentDescription = "设置IP地址")
             }
         }
     ) { paddingValues ->
@@ -103,6 +109,39 @@ fun MainScreen(navController: NavController) {
                     }
                 }
             }
+            if (showIpDialog) {
+                AlertDialog(
+                    onDismissRequest = { showIpDialog = false },
+                    title = { Text("设置树莓派IP地址") },
+                    text = {
+                        OutlinedTextField(
+                            value = ipAddress,
+                            onValueChange = { ipAddress = it },
+                            label = { Text("IP地址") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                // 保存IP地址并更新网络客户端
+                                NetworkClient.updateIpAddress(ipAddress)
+                                showIpDialog = false
+                            }
+                        ) {
+                            Text("确定")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { showIpDialog = false }
+                        ) {
+                            Text("取消")
+                        }
+                    }
+                )
+            }      
         }
     }
 } 
