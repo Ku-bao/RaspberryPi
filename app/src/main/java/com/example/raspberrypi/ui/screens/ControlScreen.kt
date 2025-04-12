@@ -58,15 +58,40 @@ fun ControlScreen(
             // 第一部分：摇杆区域
             Box(
                 modifier = Modifier
-                    .fillMaxHeight() // 去掉固定宽度
-                    .weight(0.5f), // 使用权重以平衡布局
+                    .fillMaxHeight()
+                    .weight(0.5f),
                 contentAlignment = Alignment.Center
             ) {
-                Joystick(
-                    onDirectionChange = { x, y ->
-                        viewModel.sendControlData(x, y)
+                Column(
+                    modifier = Modifier.padding(top = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Button(
+                        onClick = { viewModel.turnLeft() },
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("左转")
                     }
-                )
+                    Button(
+                        onClick = { viewModel.turnRight() },
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("右转")
+                    }
+                    // 摇杆组件
+                    Joystick(
+                        onDirectionChange = { x, y ->
+                            viewModel.sendControlData(x, y)
+                        }
+                    )
+                }
             }
 
             // 第二部分：视频流区域
@@ -81,13 +106,11 @@ fun ControlScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                ) {
-                    // TODO: 添加摄像头预览
+                if (!isStreaming) {
+                    Text(
+                        text = "视频流预览区域",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
                 }
             }
             // 第三部分：按钮区域
@@ -101,14 +124,14 @@ fun ControlScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Card (
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth(),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer
                         ),
                         shape = RoundedCornerShape(8.dp)
-                    ){
+                    ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -136,27 +159,27 @@ fun ControlScreen(
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text("按钮1")
+                            Text("模式1")
                         }
                         Button(
                             onClick = { viewModel.setModel2() },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text("按钮2")
+                            Text("模式2")
                         }
                         Button(
                             onClick = { viewModel.setModel3() },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text("按钮3")
+                            Text("模式3")
                         }
                     }
 
                     // 开始抓取按钮
                     Button(
-                        onClick = {viewModel.Grasp()},
+                        onClick = { viewModel.Grasp() },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),

@@ -92,6 +92,14 @@ class ControlViewModel : ViewModel() {
         sendButtonCommand(ButtonIds.BUTTON_MODEL3)
     }
 
+    fun turnLeft() {
+        sendButtonCommand(ButtonIds.BUTTON_LEFT)
+    }
+
+    fun turnRight() {
+        sendButtonCommand(ButtonIds.BUTTON_RIGHT)
+    }
+
     /**
      * 开关目标检测
      */

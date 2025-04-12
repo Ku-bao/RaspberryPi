@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object NetworkClient {
-    private const val BASE_URL = "http://192.168.4.1:5000/"  // 树莓派IP地址和端口
+    private const val BASE_URL = "http://192.168.10.126:316/"  // 树莓派IP地址和端口
     
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {

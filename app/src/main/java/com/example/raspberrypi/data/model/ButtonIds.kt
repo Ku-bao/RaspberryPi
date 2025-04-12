@@ -9,6 +9,10 @@ object ButtonIds {
     const val BUTTON_MODEL2 = "button_model2"
     const val BUTTON_MODEL3 = "button_model3"
 
+    //左转右转
+    const val BUTTON_LEFT = "button_left"
+    const val BUTTON_RIGHT = "button_right"
+
     // 抓取操作
     const val BUTTON_GRASP = "button_grasp"
 
