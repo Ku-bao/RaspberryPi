@@ -1,5 +1,8 @@
 package com.example.raspberrypi.ui.screens
 
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -14,10 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -37,12 +43,20 @@ fun AutoGraspScreen(
     val zCoordinate by viewModel.zCoordinate.collectAsState()
     val distance by viewModel.distance.collectAsState()
     val angle by viewModel.angle.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.checkConnection()
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("自动抓取模式") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = {
+                        viewModel.closeVideo()
+                        navController.navigateUp()
+                    }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "返回")
                     }
                 },
@@ -74,8 +88,21 @@ fun AutoGraspScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                // 视频流内容将在这里显示
-                if (!isStreaming) {
+                if (isConnected) {
+                    AndroidView(
+                        factory = {
+                            WebView(it).apply {
+                                settings.javaScriptEnabled = true
+                                settings.mediaPlaybackRequiresUserGesture = false
+                                settings.loadWithOverviewMode = true
+                                settings.useWideViewPort = true
+                                webChromeClient = WebChromeClient()
+                                loadUrl("http://192.168.10.126:316/video")
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
                     Text(
                         text = "视频流预览区域",
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)

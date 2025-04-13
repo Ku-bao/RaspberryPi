@@ -12,16 +12,13 @@ import retrofit2.http.Streaming
 interface RaspberryPiService {
     @POST("control")
     suspend fun sendControlData(@Body controlData: ControlData): Response<Unit>
-    
-    @Streaming
-    @GET("video")
-    suspend fun getVideoStream(): Response<ResponseBody>
-    
-    /**
-     * 发送按钮命令
-     * @param buttonCommand 按钮命令
-     * @return 响应结果
-     */
+
+    @GET("stopvideo")
+    suspend fun stopVideo(): Response<Unit>
+
     @POST("button")
     suspend fun sendButtonCommand(@Body buttonCommand: ButtonCommand): Response<Unit>
-} 
+
+    @GET("ping")
+    suspend fun ping(): Response<Unit>
+}

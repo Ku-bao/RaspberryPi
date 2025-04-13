@@ -1,5 +1,7 @@
 package com.example.raspberrypi.ui.screens
 
+import android.webkit.WebChromeClient
+import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -18,6 +20,7 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.raspberrypi.ui.components.Joystick
@@ -33,12 +36,18 @@ fun ControlScreen(
     val isConnected by viewModel.isConnected.collectAsState()
     val angle by viewModel.angle.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.checkConnection()
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("遥控模式") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = {
+                        viewModel.closeVideo()
+                        navController.navigateUp()}) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "返回")
                     }
                 },
@@ -99,6 +108,9 @@ fun ControlScreen(
                 modifier = Modifier
                     .weight(1.2f)
                     .fillMaxHeight()
+                    .clip(RoundedCornerShape(16.dp))
+                    .aspectRatio(1f) // 保持1:1比例
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
                     .border(
                         width = 2.dp,
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
@@ -106,7 +118,21 @@ fun ControlScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                if (!isStreaming) {
+                if (isConnected) {
+                    AndroidView(
+                        factory = {
+                            WebView(it).apply {
+                                settings.javaScriptEnabled = true
+                                settings.mediaPlaybackRequiresUserGesture = false
+                                settings.loadWithOverviewMode = true
+                                settings.useWideViewPort = true
+                                webChromeClient = WebChromeClient()
+                                loadUrl("http://192.168.10.126:316/video")
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
                     Text(
                         text = "视频流预览区域",
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)

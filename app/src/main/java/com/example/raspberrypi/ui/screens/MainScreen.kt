@@ -6,7 +6,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.outlined.DirectionsCar
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,7 +21,6 @@ fun MainScreen(navController: NavController) {
     var showIpDialog by remember { mutableStateOf(false) }
 
     var ipAddress by remember {  mutableStateOf(NetworkClient.getIpAddress()) }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -125,7 +123,6 @@ fun MainScreen(navController: NavController) {
                     confirmButton = {
                         TextButton(
                             onClick = {
-                                // 保存IP地址并更新网络客户端
                                 NetworkClient.updateIpAddress(ipAddress)
                                 showIpDialog = false
                             }

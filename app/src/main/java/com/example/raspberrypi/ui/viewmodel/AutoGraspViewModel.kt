@@ -2,7 +2,6 @@ package com.example.raspberrypi.ui.viewmodel
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.raspberrypi.data.api.NetworkClient
@@ -17,6 +16,7 @@ class AutoGraspViewModel : ViewModel() {
     private val _isStreaming = MutableStateFlow(false)
     val isStreaming: StateFlow<Boolean> = _isStreaming
 
+    // 使用连接ViewModel的连接状态
     private val _isConnected = MutableStateFlow(false)
     val isConnected: StateFlow<Boolean> = _isConnected
 
@@ -67,6 +67,32 @@ class AutoGraspViewModel : ViewModel() {
             startAutoGrasp()
         }
         _isStreaming.value = !_isStreaming.value
+    }
+
+    fun checkConnection() {
+        viewModelScope.launch {
+            try {
+                val isConnected = NetworkClient.checkConnection()
+                _isConnected.value = isConnected
+                Log.d("AutoGraspViewModel", "连接状态检查: $isConnected")
+            } catch (e: Exception) {
+                _isConnected.value = false
+                Log.e("AutoGraspViewModel", "连接状态检查失败: ${e.message}")
+            }
+        }
+    }
+
+    fun closeVideo() {
+        viewModelScope.launch {
+            try {
+                val response = NetworkClient.raspberryPiService.stopVideo()
+                _isConnected.value = response.isSuccessful
+                Log.d("AutoGraspViewModel", "发送停止命令成功: ${response.isSuccessful}")
+            } catch (e: Exception) {
+                _isConnected.value = false
+                Log.e("AutoGraspViewModel", "发送按钮命令失败: ${e.message}")
+            }
+        }
     }
 
     /**

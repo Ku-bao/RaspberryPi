@@ -1,5 +1,7 @@
 package com.example.raspberrypi.data.api
 
+import android.util.Log
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -50,6 +52,16 @@ object NetworkClient {
     fun updateProtocol(newProtocol: String) {
         protocol = newProtocol
         buildRetrofit()
+    }
+
+    suspend fun checkConnection(): Boolean {
+        return try {
+            val response = raspberryPiService.ping()
+            response.isSuccessful
+        } catch (e: Exception) {
+            Log.e("NetworkClient", "连接检查失败: ${e.message}")
+            false
+        }
     }
 
     private fun buildRetrofit() {

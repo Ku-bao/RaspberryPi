@@ -14,13 +14,14 @@ import kotlinx.coroutines.launch
 class ControlViewModel : ViewModel() {
     private val _isStreaming = MutableStateFlow(false)
     val isStreaming: StateFlow<Boolean> = _isStreaming
-    
-    private val _isConnected = MutableStateFlow(false)
-    val isConnected: StateFlow<Boolean> = _isConnected
 
     private val _angle = MutableStateFlow("45°")
     val angle: StateFlow<String> = _angle
-    
+
+    // 使用连接ViewModel的连接状态
+    private val _isConnected = MutableStateFlow(false)
+    val isConnected: StateFlow<Boolean> = _isConnected
+
     /**
      * 发送摇杆控制数据
      */
@@ -61,6 +62,31 @@ class ControlViewModel : ViewModel() {
         }
     }
 
+    fun checkConnection() {
+        viewModelScope.launch {
+            try {
+                val isConnected = NetworkClient.checkConnection()
+                _isConnected.value = isConnected
+                Log.d("AutoGraspViewModel", "连接状态检查: $isConnected")
+            } catch (e: Exception) {
+                _isConnected.value = false
+                Log.e("AutoGraspViewModel", "连接状态检查失败: ${e.message}")
+            }
+        }
+    }
+
+    fun closeVideo() {
+        viewModelScope.launch {
+            try {
+                val response = NetworkClient.raspberryPiService.stopVideo()
+                _isConnected.value = response.isSuccessful
+                Log.d("AutoGraspViewModel", "发送停止命令成功: ${response.isSuccessful}")
+            } catch (e: Exception) {
+                _isConnected.value = false
+                Log.e("AutoGraspViewModel", "发送按钮命令失败: ${e.message}")
+            }
+        }
+    }
 
     fun toggleStreaming() {
         if (_isStreaming.value) {

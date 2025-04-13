@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
     
     // Material Icons
     implementation("androidx.compose.material:material-icons-core:1.6.1")
