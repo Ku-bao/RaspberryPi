@@ -20,6 +20,9 @@ class AutoGraspViewModel : ViewModel() {
     private val _isConnected = MutableStateFlow(false)
     val isConnected: StateFlow<Boolean> = _isConnected
 
+    private val _isDetect = MutableStateFlow(false)
+    val isDetect: StateFlow<Boolean> = _isDetect
+
     // 物体坐标数据
     private val _xCoordinate = MutableStateFlow("0.0")
     val xCoordinate: StateFlow<String> = _xCoordinate
@@ -60,11 +63,20 @@ class AutoGraspViewModel : ViewModel() {
         }
     }
 
-    fun toggleStreaming() {
-        if (_isStreaming.value) {
+    fun toggleDetect() {
+        if (_isDetect.value) {
             stopAutoGrasp()
         } else {
             startAutoGrasp()
+        }
+        _isDetect.value = !_isDetect.value
+    }
+
+    fun toggleStreaming() {
+        if (_isStreaming.value) {
+//            closeVideo()
+        } else {
+//            startAutoGrasp()
         }
         _isStreaming.value = !_isStreaming.value
     }

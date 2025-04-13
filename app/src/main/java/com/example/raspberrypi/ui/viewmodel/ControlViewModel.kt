@@ -18,6 +18,9 @@ class ControlViewModel : ViewModel() {
     private val _angle = MutableStateFlow("45°")
     val angle: StateFlow<String> = _angle
 
+    private val _isDetect = MutableStateFlow(false)
+    val isDetect: StateFlow<Boolean> = _isDetect
+
     // 使用连接ViewModel的连接状态
     private val _isConnected = MutableStateFlow(false)
     val isConnected: StateFlow<Boolean> = _isConnected
@@ -88,11 +91,20 @@ class ControlViewModel : ViewModel() {
         }
     }
 
-    fun toggleStreaming() {
-        if (_isStreaming.value) {
+    fun toggleDetect() {
+        if (_isDetect.value) {
             endDectect()
         } else {
             startDectect()
+        }
+        _isDetect.value = !_isDetect.value
+    }
+
+    fun toggleStreaming() {
+        if (_isStreaming.value) {
+
+        } else {
+
         }
         _isStreaming.value = !_isStreaming.value
     }

@@ -37,12 +37,24 @@ fun AutoGraspScreen(
 ) {
     val isStreaming by viewModel.isStreaming.collectAsState()
     val isConnected by viewModel.isConnected.collectAsState()
+    val isDetect by viewModel.isDetect.collectAsState()
 
     val xCoordinate by viewModel.xCoordinate.collectAsState()
     val yCoordinate by viewModel.yCoordinate.collectAsState()
     val zCoordinate by viewModel.zCoordinate.collectAsState()
     val distance by viewModel.distance.collectAsState()
     val angle by viewModel.angle.collectAsState()
+
+
+    val webView = remember {
+        WebView(navController.context).apply {
+            settings.javaScriptEnabled = true
+            settings.mediaPlaybackRequiresUserGesture = false
+            settings.loadWithOverviewMode = true
+            settings.useWideViewPort = true
+            webChromeClient = WebChromeClient()
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.checkConnection()
@@ -88,16 +100,18 @@ fun AutoGraspScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                if (isConnected) {
+                if (isConnected and isStreaming) {
                     AndroidView(
-                        factory = {
-                            WebView(it).apply {
-                                settings.javaScriptEnabled = true
-                                settings.mediaPlaybackRequiresUserGesture = false
-                                settings.loadWithOverviewMode = true
-                                settings.useWideViewPort = true
-                                webChromeClient = WebChromeClient()
-                                loadUrl("http://192.168.10.126:316/video")
+                        factory = { webView },
+                        update = {
+                            if (isStreaming) {
+                                if (it.url != "http://192.168.10.126:316/video") {
+                                    it.loadUrl("http://192.168.10.126:316/video")
+                                }
+                            } else {
+                                if (it.url != "about:blank") {
+                                    it.loadUrl("about:blank")
+                                }
                             }
                         },
                         modifier = Modifier.fillMaxSize()
@@ -139,7 +153,7 @@ fun AutoGraspScreen(
                             fontSize = 18.sp,
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
-                        
+
                         // 3D坐标
                         Row(
                             modifier = Modifier.padding(vertical = 6.dp),
@@ -155,7 +169,7 @@ fun AutoGraspScreen(
                                 fontSize = 16.sp
                             )
                         }
-                        
+
                         // 移动距离
                         Row(
                             modifier = Modifier.padding(vertical = 6.dp),
@@ -171,7 +185,7 @@ fun AutoGraspScreen(
                                 fontSize = 16.sp
                             )
                         }
-                        
+
                         // 偏移角度
                         Row(
                             modifier = Modifier.padding(vertical = 6.dp),
@@ -189,32 +203,64 @@ fun AutoGraspScreen(
                         }
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.weight(1f))
-                
-                // 控制按钮
-                Button(
-                    onClick = { viewModel.toggleStreaming() },
+
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isStreaming)
-                            MaterialTheme.colorScheme.error
-                        else
-                            MaterialTheme.colorScheme.primary
-                    )
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Icon(
-                        if (isStreaming) Icons.Default.Stop else Icons.Default.PlayArrow,
-                        contentDescription = if (isStreaming) "停止" else "开始",
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                    Text(
-                        if (isStreaming) "停止自动抓取" else "开始自动抓取",
-                        fontSize = 16.sp
-                    )
+                    // 自动抓取切换按钮（左边）
+                    Button(
+                        onClick = { viewModel.toggleDetect() },
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isDetect)
+                                MaterialTheme.colorScheme.error
+                            else
+                                MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Icon(
+                            if (isDetect) Icons.Default.Stop else Icons.Default.PlayArrow,
+                            contentDescription = if (isDetect) "停止" else "开始",
+                            modifier = Modifier.padding(end = 6.dp)
+                        )
+                        Text(
+                            if (isDetect) "停止程序" else "启动程序",
+                            fontSize = 15.sp
+                        )
+                    }
+
+                    // 连接状态切换按钮（右边）
+                    Button(
+                        onClick = { viewModel.toggleStreaming() },
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isStreaming)
+                                MaterialTheme.colorScheme.error
+                            else
+                                MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Icon(
+                            if (isStreaming) Icons.Default.Stop else Icons.Default.PlayArrow,
+                            contentDescription = if (isStreaming) "断开" else "连接",
+                            modifier = Modifier.padding(end = 6.dp)
+                        )
+                        Text(
+                            if (isStreaming) "断开视频" else "连接视频",
+                            fontSize = 15.sp
+                        )
+                    }
                 }
             }
         }

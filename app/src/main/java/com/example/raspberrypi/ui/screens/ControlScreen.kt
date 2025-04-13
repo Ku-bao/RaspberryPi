@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -34,7 +35,18 @@ fun ControlScreen(
 ) {
     val isStreaming by viewModel.isStreaming.collectAsState()
     val isConnected by viewModel.isConnected.collectAsState()
+    val isDetect by viewModel.isDetect.collectAsState()
     val angle by viewModel.angle.collectAsState()
+
+    val webView = remember {
+        WebView(navController.context).apply {
+            settings.javaScriptEnabled = true
+            settings.mediaPlaybackRequiresUserGesture = false
+            settings.loadWithOverviewMode = true
+            settings.useWideViewPort = true
+            webChromeClient = WebChromeClient()
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.checkConnection()
@@ -118,16 +130,18 @@ fun ControlScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                if (isConnected) {
+                if (isConnected and isStreaming) {
                     AndroidView(
-                        factory = {
-                            WebView(it).apply {
-                                settings.javaScriptEnabled = true
-                                settings.mediaPlaybackRequiresUserGesture = false
-                                settings.loadWithOverviewMode = true
-                                settings.useWideViewPort = true
-                                webChromeClient = WebChromeClient()
-                                loadUrl("http://192.168.10.126:316/video")
+                        factory = { webView },
+                        update = {
+                            if (isStreaming) {
+                                if (it.url != "http://192.168.10.126:316/video") {
+                                    it.loadUrl("http://192.168.10.126:316/video")
+                                }
+                            } else {
+                                if (it.url != "about:blank") {
+                                    it.loadUrl("about:blank")
+                                }
                             }
                         },
                         modifier = Modifier.fillMaxSize()
@@ -217,26 +231,64 @@ fun ControlScreen(
                         Text("开始抓取")
                     }
 
-                    // 开启检测按钮
-                    Button(
-                        onClick = { viewModel.toggleStreaming() },
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isStreaming)
-                                MaterialTheme.colorScheme.error
-                            else
-                                MaterialTheme.colorScheme.primary
-                        )
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Icon(
-                            if (isStreaming) Icons.Default.Stop else Icons.Default.PlayArrow,
-                            contentDescription = if (isStreaming) "停止" else "开始",
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(if (isStreaming) "停止识别" else "开始识别")
+                        // 开启检测按钮
+                        Button(
+                            onClick = { viewModel.toggleDetect() },
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (isDetect)
+                                    MaterialTheme.colorScheme.error
+                                else
+                                    MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Icon(
+                                if (isDetect) Icons.Default.Stop else Icons.Default.PlayArrow,
+                                contentDescription = if (isDetect) "停止" else "开始",
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Text(
+                                text = if (isStreaming) "停止\n识别" else "开始\n识别",
+                                fontSize = 15.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                        // 连接状态切换按钮（右边）
+                        Button(
+                            onClick = { viewModel.toggleStreaming() },
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (isStreaming)
+                                    MaterialTheme.colorScheme.error
+                                else
+                                    MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Icon(
+                                if (isStreaming) Icons.Default.Stop else Icons.Default.PlayArrow,
+                                contentDescription = if (isStreaming) "断开" else "连接",
+                                modifier = Modifier.padding(end = 6.dp)
+                            )
+                            Text(
+                                text = if (isStreaming) "断开\n视频" else "连接\n视频",
+                                fontSize = 15.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
                 }
             }
