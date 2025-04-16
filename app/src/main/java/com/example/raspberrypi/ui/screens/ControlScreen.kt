@@ -55,7 +55,7 @@ fun ControlScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("遥控模式") },
+                title = { Text("Remote Control Mode") },
                 navigationIcon = {
                     IconButton(onClick = {
                         viewModel.closeVideo()
@@ -95,7 +95,7 @@ fun ControlScreen(
                             .height(40.dp),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("左转")
+                        Text("Ture left")
                     }
                     Button(
                         onClick = { viewModel.turnRight() },
@@ -104,7 +104,7 @@ fun ControlScreen(
                             .height(40.dp),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("右转")
+                        Text("Turn right")
                     }
                     // 摇杆组件
                     Joystick(
@@ -148,7 +148,7 @@ fun ControlScreen(
                     )
                 } else {
                     Text(
-                        text = "视频流预览区域",
+                        text = "Video stream preview area",
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
                 }
@@ -179,7 +179,7 @@ fun ControlScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = "偏移角度:",
+                                text = "Offset angle:",
                                 fontWeight = FontWeight.Medium,
                                 modifier = Modifier
                                     .padding(start = 20.dp, end = 2.dp)
@@ -199,21 +199,27 @@ fun ControlScreen(
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text("模式1")
+                            Text("Mode\n1",
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth())
                         }
                         Button(
                             onClick = { viewModel.setModel2() },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text("模式2")
+                            Text("Mode\n2",
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth())
                         }
                         Button(
                             onClick = { viewModel.setModel3() },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text("模式3")
+                            Text("Mode\n3",
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth())
                         }
                     }
 
@@ -228,7 +234,7 @@ fun ControlScreen(
                             containerColor = MaterialTheme.colorScheme.primary
                         )
                     ) {
-                        Text("开始抓取")
+                        Text("Start Grab")
                     }
 
                     Row(
@@ -254,10 +260,10 @@ fun ControlScreen(
                             Icon(
                                 if (isDetect) Icons.Default.Stop else Icons.Default.PlayArrow,
                                 contentDescription = if (isDetect) "停止" else "开始",
-                                modifier = Modifier.padding(end = 8.dp)
+                                // modifier = Modifier.padding(end = 4.dp)
                             )
                             Text(
-                                text = if (isStreaming) "停止\n识别" else "开始\n识别",
+                                text = if (isDetect) "Stop\nDetect" else "Start\nDetect",
                                 fontSize = 15.sp,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.fillMaxWidth()
@@ -280,10 +286,10 @@ fun ControlScreen(
                             Icon(
                                 if (isStreaming) Icons.Default.Stop else Icons.Default.PlayArrow,
                                 contentDescription = if (isStreaming) "断开" else "连接",
-                                modifier = Modifier.padding(end = 6.dp)
+                                //modifier = Modifier.padding(end = 4.dp)
                             )
                             Text(
-                                text = if (isStreaming) "断开\n视频" else "连接\n视频",
+                                text = if (isStreaming) "Disconnect\nVideo" else "Connect\nVideo",
                                 fontSize = 15.sp,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.fillMaxWidth()

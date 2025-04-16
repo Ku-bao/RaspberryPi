@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 object NetworkClient {
 
     private var ipAddress = "192.168.10.126"
-    private var port = "316"
+    private var port = "3160"
     private var protocol = "http"
 
     private lateinit var retrofit: Retrofit

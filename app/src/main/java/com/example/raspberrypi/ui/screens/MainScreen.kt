@@ -4,12 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.AutoMode
 import androidx.compose.material.icons.outlined.DirectionsCar
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.raspberrypi.data.api.NetworkClient
@@ -24,7 +26,7 @@ fun MainScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("树莓派控制") },
+                title = { Text("Raspberry PI Control") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -46,7 +48,7 @@ fun MainScreen(navController: NavController) {
             contentAlignment = Alignment.Center
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(64.dp),
+                horizontalArrangement = Arrangement.spacedBy(36.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Card(
@@ -72,12 +74,13 @@ fun MainScreen(navController: NavController) {
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            "遥控模式",
-                            style = MaterialTheme.typography.titleMedium
+                            "Remote Control\nMode",
+                            style = MaterialTheme.typography.titleMedium,
+                            textAlign = TextAlign.Center,
+                            maxLines = 2
                         )
                     }
                 }
-                
                 Card(
                     modifier = Modifier.size(200.dp),
                     shape = RoundedCornerShape(16.dp),
@@ -101,8 +104,40 @@ fun MainScreen(navController: NavController) {
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            "自动抓取模式",
-                            style = MaterialTheme.typography.titleMedium
+                            "Auto-Capture\nMode",
+                            style = MaterialTheme.typography.titleMedium,
+                            textAlign = TextAlign.Center,
+                            maxLines = 2
+                        )
+                    }
+                }
+                Card(
+                    modifier = Modifier.size(200.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    onClick = { /* 未来可以添加点击事件 */ },
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.AutoMode,  // 临时使用设置图标，后续可以换成合适的图标
+                            contentDescription = "智能避障",
+                            modifier = Modifier.size(48.dp),
+                            tint = MaterialTheme.colorScheme.tertiary
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            "Intelligent Obstacle \n Avoidance Mode",
+                            style = MaterialTheme.typography.titleMedium,
+                            textAlign = TextAlign.Center,
+                            maxLines = 2
                         )
                     }
                 }
@@ -110,12 +145,12 @@ fun MainScreen(navController: NavController) {
             if (showIpDialog) {
                 AlertDialog(
                     onDismissRequest = { showIpDialog = false },
-                    title = { Text("设置树莓派IP地址") },
+                    title = { Text("Setting the Raspberry Pi IP address") },
                     text = {
                         OutlinedTextField(
                             value = ipAddress,
                             onValueChange = { ipAddress = it },
-                            label = { Text("IP地址") },
+                            label = { Text("IP address") },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -127,14 +162,14 @@ fun MainScreen(navController: NavController) {
                                 showIpDialog = false
                             }
                         ) {
-                            Text("确定")
+                            Text("Confirm")
                         }
                     },
                     dismissButton = {
                         TextButton(
                             onClick = { showIpDialog = false }
                         ) {
-                            Text("取消")
+                            Text("Cancel")
                         }
                     }
                 )

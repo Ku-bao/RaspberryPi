@@ -63,7 +63,7 @@ fun AutoGraspScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("自动抓取模式") },
+                title = { Text("Auto-Capture Mode") },
                 navigationIcon = {
                     IconButton(onClick = {
                         viewModel.closeVideo()
@@ -118,7 +118,7 @@ fun AutoGraspScreen(
                     )
                 } else {
                     Text(
-                        text = "视频流预览区域",
+                        text = "Video stream preview area",
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
                 }
@@ -148,7 +148,7 @@ fun AutoGraspScreen(
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = "目标物体信息",
+                            text = "Target object information",
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp,
                             modifier = Modifier.padding(bottom = 12.dp)
@@ -160,9 +160,9 @@ fun AutoGraspScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "3D坐标:",
+                                text = "3D coordinates:",
                                 fontWeight = FontWeight.Medium,
-                                modifier = Modifier.width(90.dp)
+                               // modifier = Modifier.width(90.dp)
                             )
                             Text(
                                 "(${xCoordinate}, ${yCoordinate}, ${zCoordinate})",
@@ -176,9 +176,9 @@ fun AutoGraspScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "移动距离:",
+                                text = "Moving distance:",
                                 fontWeight = FontWeight.Medium,
-                                modifier = Modifier.width(90.dp)
+                                // modifier = Modifier.width(90.dp)
                             )
                             Text(
                                 "${distance} cm",
@@ -192,9 +192,9 @@ fun AutoGraspScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "偏移角度:",
+                                text = "Offset angle:",
                                 fontWeight = FontWeight.Medium,
-                                modifier = Modifier.width(90.dp)
+                               // modifier = Modifier.width(90.dp)
                             )
                             Text(
                                 angle,
@@ -232,7 +232,7 @@ fun AutoGraspScreen(
                             modifier = Modifier.padding(end = 6.dp)
                         )
                         Text(
-                            if (isDetect) "停止程序" else "启动程序",
+                            if (isDetect) "Stop Program" else "Start Program",
                             fontSize = 15.sp
                         )
                     }
@@ -257,7 +257,7 @@ fun AutoGraspScreen(
                             modifier = Modifier.padding(end = 6.dp)
                         )
                         Text(
-                            if (isStreaming) "断开视频" else "连接视频",
+                            if (isStreaming) "Disconnect Video" else "Connect Video",
                             fontSize = 15.sp
                         )
                     }
