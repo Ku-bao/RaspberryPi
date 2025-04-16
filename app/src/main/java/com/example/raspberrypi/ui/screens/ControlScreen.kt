@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.raspberrypi.data.api.NetworkClient
 import com.example.raspberrypi.ui.components.Joystick
 import com.example.raspberrypi.ui.viewmodel.ControlViewModel
 
@@ -131,12 +132,13 @@ fun ControlScreen(
                 contentAlignment = Alignment.Center
             ) {
                 if (isConnected and isStreaming) {
+                    val videoUrl = "http://${NetworkClient.getIpAddress()}:${NetworkClient.getPort()}/video"
                     AndroidView(
                         factory = { webView },
                         update = {
                             if (isStreaming) {
-                                if (it.url != "http://192.168.10.126:316/video") {
-                                    it.loadUrl("http://192.168.10.126:316/video")
+                                if (it.url != videoUrl) {
+                                    it.loadUrl(videoUrl)
                                 }
                             } else {
                                 if (it.url != "about:blank") {

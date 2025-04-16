@@ -39,6 +39,10 @@ object NetworkClient {
         return ipAddress
     }
 
+    fun getPort(): String {
+        return port
+    }
+
     fun updateIpAddress(newIp: String) {
         ipAddress = newIp
         buildRetrofit()
