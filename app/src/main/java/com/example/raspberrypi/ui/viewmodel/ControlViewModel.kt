@@ -132,10 +132,20 @@ class ControlViewModel : ViewModel() {
 
     fun turnLeft() {
         sendButtonCommand(ButtonIds.BUTTON_LEFT)
+        // Log.d("ControlViewModel", "发送turnLeft成功")
+    }
+
+    fun stopTurnLeft() {
+        sendButtonCommand(ButtonIds.BUTTON_LEFT, false)
+        // Log.d("ControlViewModel", "发送stopTurnLeft成功")
     }
 
     fun turnRight() {
         sendButtonCommand(ButtonIds.BUTTON_RIGHT)
+    }
+
+    fun stopTurnRight() {
+        sendButtonCommand(ButtonIds.BUTTON_RIGHT,false)
     }
 
     /**

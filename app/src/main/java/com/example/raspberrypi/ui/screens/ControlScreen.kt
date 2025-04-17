@@ -1,9 +1,13 @@
 package com.example.raspberrypi.ui.screens
 
+import android.util.Log
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,7 +42,6 @@ fun ControlScreen(
     val isConnected by viewModel.isConnected.collectAsState()
     val isDetect by viewModel.isDetect.collectAsState()
     val angle by viewModel.angle.collectAsState()
-
     val webView = remember {
         WebView(navController.context).apply {
             settings.javaScriptEnabled = true
@@ -89,23 +92,57 @@ fun ControlScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Button(
-                        onClick = { viewModel.turnLeft() },
-                        modifier = Modifier
-                            .width(80.dp)
-                            .height(40.dp),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text("Ture left")
+                    val leftButtonInteractionSource = remember { MutableInteractionSource() }
+                    val isLeftButtonPressed by leftButtonInteractionSource.collectIsPressedAsState()
+                    
+                    LaunchedEffect(isLeftButtonPressed) {
+                        if (isLeftButtonPressed) {
+                            viewModel.turnLeft()
+                        } else {
+                            viewModel.stopTurnLeft()
+                        }
                     }
+                    
                     Button(
-                        onClick = { viewModel.turnRight() },
+                        onClick = { },
+                        interactionSource = leftButtonInteractionSource,
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(40.dp)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onPress = { pressScope ->
+                                        viewModel.turnLeft()
+                                        tryAwaitRelease()
+                                        viewModel.stopTurnLeft()
+                                    }
+                                )
+                            },
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("Left")
+                    }
+                    
+                    val rightButtonInteractionSource = remember { MutableInteractionSource() }
+                    val isRightButtonPressed by rightButtonInteractionSource.collectIsPressedAsState()
+                    
+                    LaunchedEffect(isRightButtonPressed) {
+                        if (isRightButtonPressed) {
+                            viewModel.turnRight()
+                        } else {
+                            viewModel.stopTurnRight()
+                        }
+                    }
+                    
+                    Button(
+                        onClick = { },
+                        interactionSource = rightButtonInteractionSource,
                         modifier = Modifier
                             .width(80.dp)
                             .height(40.dp),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("Turn right")
+                        Text("Right")
                     }
                     // 摇杆组件
                     Joystick(

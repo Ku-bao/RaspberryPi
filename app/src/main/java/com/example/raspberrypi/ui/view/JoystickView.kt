@@ -86,6 +86,10 @@ class JoystickView(context: Context, attrs: AttributeSet? = null) : View(context
             }
             MotionEvent.ACTION_UP -> {
                 currentPosition = Offset(0f, 0f)
+                onDirectionChangeListener?.invoke(
+                    currentPosition.x / maxRadius,
+                    currentPosition.y / maxRadius
+                )
                 invalidate()  // 重新绘制
                 return true
             }
