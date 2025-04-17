@@ -108,16 +108,7 @@ fun ControlScreen(
                         interactionSource = leftButtonInteractionSource,
                         modifier = Modifier
                             .width(80.dp)
-                            .height(40.dp)
-                            .pointerInput(Unit) {
-                                detectTapGestures(
-                                    onPress = { pressScope ->
-                                        viewModel.turnLeft()
-                                        tryAwaitRelease()
-                                        viewModel.stopTurnLeft()
-                                    }
-                                )
-                            },
+                            .height(40.dp),
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text("Left")
