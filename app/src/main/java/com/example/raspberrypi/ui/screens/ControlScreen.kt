@@ -160,7 +160,10 @@ fun ControlScreen(
                 contentAlignment = Alignment.Center
             ) {
                 if (isConnected and isStreaming) {
-                    val videoUrl = "http://${NetworkClient.getIpAddress()}:${NetworkClient.getPort()}/video"
+                    var videoUrl = "http://${NetworkClient.getIpAddress()}:${NetworkClient.getPort()}/video"
+                    if (isDetect) {
+                        videoUrl = "http://${NetworkClient.getIpAddress()}:${NetworkClient.getPort()}/detection_video"
+                    }
                     AndroidView(
                         factory = { webView },
                         update = {
