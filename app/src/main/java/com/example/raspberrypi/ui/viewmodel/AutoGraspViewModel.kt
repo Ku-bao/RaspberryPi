@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.raspberrypi.data.api.NetworkClient
+import com.example.raspberrypi.data.model.AutoGraspData
 import com.example.raspberrypi.data.model.ButtonCommand
 import com.example.raspberrypi.data.model.ButtonIds
 import com.example.raspberrypi.data.model.ControlData
@@ -39,29 +40,8 @@ class AutoGraspViewModel : ViewModel() {
     private val _angle = MutableStateFlow("0")
     val angle: StateFlow<String> = _angle
 
-
-    /**
-     * 发送按钮命令
-     * @param buttonId 按钮ID
-     * @param isPressed 按钮状态，默认为按下(true)
-     */
-    fun sendButtonCommand(buttonId: String, isPressed: Boolean = true) {
-        viewModelScope.launch {
-            try {
-                val response = NetworkClient.raspberryPiService.sendButtonCommand(
-                    ButtonCommand(
-                        buttonId = buttonId,
-                        buttonAction = isPressed
-                    )
-                )
-                _isConnected.value = response.isSuccessful
-                Log.d("AutoGraspViewModel", "发送按钮命令: $buttonId, 状态: $isPressed, 成功: ${response.isSuccessful}")
-            } catch (e: Exception) {
-                _isConnected.value = false
-                Log.e("AutoGraspViewModel", "发送按钮命令失败: ${e.message}")
-            }
-        }
-    }
+    private val _action = MutableStateFlow(false)
+    val action: StateFlow<Boolean> = _action
 
     fun toggleDetect() {
         if (_isDetect.value) {
@@ -110,15 +90,39 @@ class AutoGraspViewModel : ViewModel() {
     /**
      * 开始自动抓取
      */
-    fun startAutoGrasp() {
-        sendButtonCommand(ButtonIds.AUTO_GRASP, true)
+    private fun startAutoGrasp() {
+        _action.value = true
+        viewModelScope.launch {
+            try {
+                val response = NetworkClient.raspberryPiService.autoGrasp(
+                    getAutoGraspData()
+                )
+                _isConnected.value = response.isSuccessful
+                Log.d("AutoGraspViewModel", "发送抓取命令成功: ${response.isSuccessful}")
+            } catch (e: Exception) {
+                _isConnected.value = false
+                Log.e("AutoGraspViewModel", "发送按钮命令失败: ${e.message}")
+            }
+        }
     }
 
     /**
      * 停止自动抓取
      */
-    fun stopAutoGrasp() {
-        sendButtonCommand(ButtonIds.AUTO_GRASP, false)
+   private fun stopAutoGrasp() {
+        _action.value = false
+        viewModelScope.launch {
+            try {
+                val response = NetworkClient.raspberryPiService.autoGrasp(
+                    getAutoGraspData()
+                )
+                _isConnected.value = response.isSuccessful
+                Log.d("AutoGraspViewModel", "发送停抓取命令成功: ${response.isSuccessful}")
+            } catch (e: Exception) {
+                _isConnected.value = false
+                Log.e("AutoGraspViewModel", "发送停止抓取命令失败: ${e.message}")
+            }
+        }
     }
 
     /**
@@ -131,5 +135,17 @@ class AutoGraspViewModel : ViewModel() {
         _zCoordinate.value = String.format("%.1f", z)
         _distance.value = String.format("%.1f", dist)
         _angle.value = String.format("%d°", ang)
+
+    }
+
+    fun getAutoGraspData(): AutoGraspData {
+        return AutoGraspData(
+            x = _xCoordinate.value.toFloat(),
+            y = _yCoordinate.value.toFloat(),
+            z = _zCoordinate.value.toFloat(),
+            distance = _distance.value.toFloat(),
+            angle = _angle.value.toInt(),
+            action = _action.value
+        )
     }
 }

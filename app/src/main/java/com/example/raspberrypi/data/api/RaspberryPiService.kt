@@ -1,5 +1,6 @@
 package com.example.raspberrypi.data.api
 
+import com.example.raspberrypi.data.model.AutoGraspData
 import com.example.raspberrypi.data.model.ButtonCommand
 import com.example.raspberrypi.data.model.ControlData
 import com.example.raspberrypi.data.model.ControlResponse
@@ -14,8 +15,10 @@ interface RaspberryPiService {
     @POST("control")
     suspend fun sendControlData(@Body controlData: ControlData): Response<ControlResponse>
 
+    @POST("autoGrasp")
+    suspend fun autoGrasp(@Body autoGraspData: AutoGraspData):Response<Unit>
 
-    @GET("stopvideo")
+    @GET("stopVideo")
     suspend fun stopVideo(): Response<Unit>
 
     @POST("button")
