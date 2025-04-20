@@ -15,8 +15,8 @@ class ControlViewModel : ViewModel() {
     private val _isStreaming = MutableStateFlow(false)
     val isStreaming: StateFlow<Boolean> = _isStreaming
 
-    private val _angle = MutableStateFlow("45°")
-    val angle: StateFlow<String> = _angle
+    private val _angle = MutableStateFlow(0f)
+    val angle: StateFlow<Float> = _angle
 
     private val _isDetect = MutableStateFlow(false)
     val isDetect: StateFlow<Boolean> = _isDetect
@@ -34,7 +34,13 @@ class ControlViewModel : ViewModel() {
                 val response = NetworkClient.raspberryPiService.sendControlData(
                     ControlData(x, y, speed)
                 )
-                _isConnected.value = response.isSuccessful
+                if (response.isSuccessful) {
+                    val angle = response.body()?.angle
+                    _angle.value = angle ?:0f
+                    _isConnected.value = true
+                } else {
+                    _isConnected.value = false
+                }
             } catch (e: Exception) {
                 _isConnected.value = false
                 Log.e("ControlViewModel", "发送控制数据失败: ${e.message}")

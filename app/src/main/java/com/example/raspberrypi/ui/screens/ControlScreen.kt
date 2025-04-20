@@ -38,6 +38,7 @@ fun ControlScreen(
     navController: NavController,
     viewModel: ControlViewModel = viewModel()
 ) {
+
     val isStreaming by viewModel.isStreaming.collectAsState()
     val isConnected by viewModel.isConnected.collectAsState()
     val isDetect by viewModel.isDetect.collectAsState()
@@ -51,7 +52,6 @@ fun ControlScreen(
             webChromeClient = WebChromeClient()
         }
     }
-
     LaunchedEffect(Unit) {
         viewModel.checkConnection()
     }
@@ -218,7 +218,7 @@ fun ControlScreen(
                                     .padding(start = 20.dp, end = 2.dp)
                             )
                             Text(
-                                angle,
+                                text = "${angle.toInt()}°",
                                 fontSize = 16.sp
                             )
                         }

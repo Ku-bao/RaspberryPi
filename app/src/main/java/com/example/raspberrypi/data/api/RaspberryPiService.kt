@@ -2,6 +2,7 @@ package com.example.raspberrypi.data.api
 
 import com.example.raspberrypi.data.model.ButtonCommand
 import com.example.raspberrypi.data.model.ControlData
+import com.example.raspberrypi.data.model.ControlResponse
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -11,7 +12,8 @@ import retrofit2.http.Streaming
 
 interface RaspberryPiService {
     @POST("control")
-    suspend fun sendControlData(@Body controlData: ControlData): Response<Unit>
+    suspend fun sendControlData(@Body controlData: ControlData): Response<ControlResponse>
+
 
     @GET("stopvideo")
     suspend fun stopVideo(): Response<Unit>
