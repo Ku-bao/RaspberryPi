@@ -33,10 +33,10 @@ class AutoGraspViewModel : ViewModel() {
     private val _zCoordinate = MutableStateFlow("0.0")
     val zCoordinate: StateFlow<String> = _zCoordinate
 
-    private val _distance = MutableStateFlow("10.0")
+    private val _distance = MutableStateFlow("0.0")
     val distance: StateFlow<String> = _distance
 
-    private val _angle = MutableStateFlow("45°")
+    private val _angle = MutableStateFlow("0")
     val angle: StateFlow<String> = _angle
 
 
@@ -125,11 +125,11 @@ class AutoGraspViewModel : ViewModel() {
      * 更新检测到的物体坐标
      */
     @SuppressLint("DefaultLocale")
-    fun updateObjectCoordinates(x: Double, y: Double, z: Double, dist: Double, ang: Double) {
-        _xCoordinate.value = String.format("%.2f", x)
-        _yCoordinate.value = String.format("%.2f", y)
-        _zCoordinate.value = String.format("%.2f", z)
-        _distance.value = String.format("%.2f", dist)
-        _angle.value = String.format("%.1f°", ang)
+    fun updateObjectCoordinates(x: Double, y: Double, z: Double, dist: Double, ang: Int) {
+        _xCoordinate.value = String.format("%.1f", x)
+        _yCoordinate.value = String.format("%.1f", y)
+        _zCoordinate.value = String.format("%.1f", z)
+        _distance.value = String.format("%.1f", dist)
+        _angle.value = String.format("%d°", ang)
     }
 }

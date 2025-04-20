@@ -46,6 +46,15 @@ fun AutoGraspScreen(
     val distance by viewModel.distance.collectAsState()
     val angle by viewModel.angle.collectAsState()
 
+    // 控制弹窗显示的状态
+    var showDialog by remember { mutableStateOf(false) }
+
+    // 需要设置的坐标和角度的初始值
+    var newX by remember { mutableStateOf(xCoordinate) }
+    var newY by remember { mutableStateOf(yCoordinate) }
+    var newZ by remember { mutableStateOf(zCoordinate) }
+    var newDistance by remember { mutableStateOf(distance) }
+    var newAngle by remember { mutableStateOf(angle) }
 
     val webView = remember {
         WebView(navController.context).apply {
@@ -102,7 +111,8 @@ fun AutoGraspScreen(
                 contentAlignment = Alignment.Center
             ) {
                 if (isConnected and isStreaming) {
-                    val videoUrl = "http://${NetworkClient.getIpAddress()}:${NetworkClient.getPort()}/video"
+                    val videoUrl =
+                        "http://${NetworkClient.getIpAddress()}:${NetworkClient.getPort()}/video"
                     AndroidView(
                         factory = { webView },
                         update = {
@@ -144,66 +154,82 @@ fun AutoGraspScreen(
                     ),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
+                    Row(
                     ) {
-                        Text(
-                            text = "Target object information",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            modifier = Modifier.padding(bottom = 12.dp)
-                        )
-
-                        // 3D坐标
-                        Row(
-                            modifier = Modifier.padding(vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp).weight(2.5f)
                         ) {
                             Text(
-                                text = "3D coordinates:",
-                                fontWeight = FontWeight.Medium,
-                               // modifier = Modifier.width(90.dp)
+                                text = "Target object information",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                modifier = Modifier.padding(bottom = 12.dp)
                             )
-                            Text(
-                                "(${xCoordinate}, ${yCoordinate}, ${zCoordinate})",
-                                fontSize = 16.sp
-                            )
+
+                            // 3D坐标
+                            Row(
+                                modifier = Modifier.padding(vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "3D coordinates:",
+                                    fontWeight = FontWeight.Medium,
+                                    // modifier = Modifier.width(90.dp)
+                                )
+                                Text(
+                                    "(${xCoordinate}, ${yCoordinate}, ${zCoordinate})",
+                                    fontSize = 16.sp
+                                )
+                            }
+
+                            // 移动距离
+                            Row(
+                                modifier = Modifier.padding(vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Moving distance:",
+                                    fontWeight = FontWeight.Medium,
+                                    // modifier = Modifier.width(90.dp)
+                                )
+                                Text(
+                                    "${distance} cm",
+                                    fontSize = 16.sp
+                                )
+                            }
+
+                            // 偏移角度
+                            Row(
+                                modifier = Modifier.padding(vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Offset angle:",
+                                    fontWeight = FontWeight.Medium,
+                                    // modifier = Modifier.width(90.dp)
+                                )
+                                Text(
+                                    angle,
+                                    fontSize = 16.sp
+                                )
+                            }
                         }
 
-                        // 移动距离
-                        Row(
-                            modifier = Modifier.padding(vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            modifier = Modifier
+                                .padding(top = 112.dp, end = 12.dp)
+                                .weight(1f),
                         ) {
-                            Text(
-                                text = "Moving distance:",
-                                fontWeight = FontWeight.Medium,
-                                // modifier = Modifier.width(90.dp)
-                            )
-                            Text(
-                                "${distance} cm",
-                                fontSize = 16.sp
-                            )
-                        }
-
-                        // 偏移角度
-                        Row(
-                            modifier = Modifier.padding(vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Offset angle:",
-                                fontWeight = FontWeight.Medium,
-                               // modifier = Modifier.width(90.dp)
-                            )
-                            Text(
-                                angle,
-                                fontSize = 16.sp
-                            )
+                            Button(
+                                onClick = { showDialog = true },
+                                shape = RoundedCornerShape(8.dp),
+                            ) {
+                                Text("Set Data")
+                            }
                         }
                     }
+
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -267,4 +293,85 @@ fun AutoGraspScreen(
             }
         }
     }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Set Parameters") },
+            text = {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = newX,
+                            onValueChange = { newX = it },
+                            label = { Text("X ") },
+                            modifier = Modifier.weight(1f)
+                        )
+                        OutlinedTextField(
+                            value = newY,
+                            onValueChange = { newY = it },
+                            label = { Text("Y ") },
+                            modifier = Modifier.weight(1f)
+                        )
+                        OutlinedTextField(
+                            value = newZ,
+                            onValueChange = { newZ = it },
+                            label = { Text("Z ") },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = newDistance,
+                            onValueChange = { newDistance = it },
+                            label = { Text("Distance") },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = newAngle,
+                            onValueChange = { newAngle = it },
+                            label = { Text("Angle") },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    // Fun element
+                    Text(
+                        text = "Here's a fun parameter: [Easter Egg]",
+                        modifier = Modifier.padding(top = 16.dp),
+                        color = Color.Gray
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.updateObjectCoordinates(
+                        newX.toDouble(),
+                        newY.toDouble(),
+                        newZ.toDouble(),
+                        newDistance.toDouble(),
+                        newAngle.toInt()
+                    )
+                    showDialog = false
+                }) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
 }
