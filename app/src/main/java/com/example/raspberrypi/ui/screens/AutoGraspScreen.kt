@@ -344,12 +344,6 @@ fun AutoGraspScreen(
                             modifier = Modifier.weight(1f)
                         )
                     }
-                    // Fun element
-                    Text(
-                        text = "Here's a fun parameter: [Easter Egg]",
-                        modifier = Modifier.padding(top = 16.dp),
-                        color = Color.Gray
-                    )
                 }
             },
             confirmButton = {

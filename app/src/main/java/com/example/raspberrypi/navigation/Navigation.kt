@@ -60,6 +60,5 @@ fun AppNavigation() {
             }) {
             AutoGraspScreen(navController)
         }
-
     }
 } 
