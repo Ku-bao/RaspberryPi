@@ -5,24 +5,30 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.AutoMode
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.DirectionsCar
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.raspberrypi.data.api.NetworkClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavController) {
 
     var showIpDialog by remember { mutableStateOf(false) }
-
-    var ipAddress by remember {  mutableStateOf(NetworkClient.getIpAddress()) }
+    var isAvoidance by remember { mutableStateOf(false) }
+    var ipAddress by remember { mutableStateOf(NetworkClient.getIpAddress()) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -114,7 +120,18 @@ fun MainScreen(navController: NavController) {
                 Card(
                     modifier = Modifier.size(200.dp),
                     shape = RoundedCornerShape(16.dp),
-                    onClick = { /* 未来可以添加点击事件 */ },
+                    onClick = {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val response = if (isAvoidance) {
+                                NetworkClient.raspberryPiService.stopAvoidance()
+                            } else {
+                                NetworkClient.raspberryPiService.startAvoidance()
+                            }
+                            if (response.isSuccessful) {
+                                isAvoidance = !isAvoidance
+                            }
+                        }
+                    },
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer
                     )
@@ -127,14 +144,14 @@ fun MainScreen(navController: NavController) {
                         verticalArrangement = Arrangement.Center
                     ) {
                         Icon(
-                            Icons.Default.AutoMode,  // 临时使用设置图标，后续可以换成合适的图标
+                            if (isAvoidance) Icons.Default.Stop else Icons.Default.AutoMode,
                             contentDescription = "智能避障",
                             modifier = Modifier.size(48.dp),
                             tint = MaterialTheme.colorScheme.tertiary
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            "Intelligent Obstacle \n Avoidance Mode",
+                            if (isAvoidance) "Stop Obstacle \n Avoidance" else "Intelligent Obstacle \n Avoidance Mode",
                             style = MaterialTheme.typography.titleMedium,
                             textAlign = TextAlign.Center,
                             maxLines = 2
@@ -173,7 +190,7 @@ fun MainScreen(navController: NavController) {
                         }
                     }
                 )
-            }      
+            }
         }
     }
 } 

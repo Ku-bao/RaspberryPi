@@ -26,4 +26,10 @@ interface RaspberryPiService {
 
     @GET("ping")
     suspend fun ping(): Response<Unit>
+
+    @POST("avoidance")
+    suspend fun startAvoidance(): Response<Unit>
+
+    @POST("stopAvoidance")
+    suspend fun stopAvoidance(): Response<Unit>
 }
