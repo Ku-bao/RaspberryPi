@@ -59,7 +59,8 @@ dependencies {
     
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    
+    implementation("androidx.compose.animation:animation:1.3.0")
+
     // 网络通信
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")

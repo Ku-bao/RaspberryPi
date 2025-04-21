@@ -1,5 +1,9 @@
 package com.example.raspberrypi.navigation
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,8 +15,17 @@ import com.example.raspberrypi.ui.screens.AutoGraspScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    
-    NavHost(navController = navController, startDestination = "main") {
+
+    NavHost(
+        navController = navController,
+        startDestination = "main",
+        enterTransition = {
+            slideInHorizontally(initialOffsetX = { 1000 }) + fadeIn()
+        },
+        popExitTransition = {
+            slideOutHorizontally(targetOffsetX = { 1000 }) + fadeOut()
+        },
+    ) {
         composable("main") {
             MainScreen(navController)
         }
