@@ -54,7 +54,7 @@ class AutoGraspViewModel : ViewModel() {
 
     fun toggleStreaming() {
         if (_isStreaming.value) {
-//            closeVideo()
+            closeVideo()
         } else {
 //            startAutoGrasp()
         }
@@ -138,7 +138,7 @@ class AutoGraspViewModel : ViewModel() {
 
     }
 
-    fun getAutoGraspData(): AutoGraspData {
+    private fun getAutoGraspData(): AutoGraspData {
         return AutoGraspData(
             x = _xCoordinate.value.toFloat(),
             y = _yCoordinate.value.toFloat(),

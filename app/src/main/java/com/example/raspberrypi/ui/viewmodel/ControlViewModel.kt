@@ -108,7 +108,7 @@ class ControlViewModel : ViewModel() {
 
     fun toggleStreaming() {
         if (_isStreaming.value) {
-
+           closeVideo()
         } else {
 
         }
