@@ -19,20 +19,45 @@ fun AppNavigation() {
     NavHost(
         navController = navController,
         startDestination = "main",
-        enterTransition = {
-            slideInHorizontally(initialOffsetX = { 1000 }) + fadeIn()
-        },
-        popExitTransition = {
-            slideOutHorizontally(targetOffsetX = { 1000 }) + fadeOut()
-        },
     ) {
-        composable("main") {
+        composable(
+            "main",
+            enterTransition = { null },
+            exitTransition = { null },
+            popEnterTransition = { null },
+            popExitTransition = { null }) {
             MainScreen(navController)
         }
-        composable("control") {
+        composable(
+            "control",
+            enterTransition = {
+                slideInHorizontally(initialOffsetX = { 1000 }) + fadeIn()
+            },
+            exitTransition = {
+                slideOutHorizontally(targetOffsetX = { 1000 }) + fadeOut()
+            },
+            popEnterTransition = {
+                slideInHorizontally(initialOffsetX = { 1000 }) + fadeIn()
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { 1000 }) + fadeOut()
+            }) {
             ControlScreen(navController)
         }
-        composable("autoGrasp") {
+        composable(
+            "autoGrasp",
+            enterTransition = {
+                slideInHorizontally(initialOffsetX = { 1000 }) + fadeIn()
+            },
+            exitTransition = {
+                slideOutHorizontally(targetOffsetX = { 1000 }) + fadeOut()
+            },
+            popEnterTransition = {
+                slideInHorizontally(initialOffsetX = { 1000 }) + fadeIn()
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { 1000 }) + fadeOut()
+            }) {
             AutoGraspScreen(navController)
         }
 
